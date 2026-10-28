@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>बस ड्राइवर - 90s Bus Driver Radio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Teko:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      background-color: #0d0806;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .sky-container {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 30%, #3a1c10 0%, #1f0f08 45%, #0d0604 85%);
+      z-index: 1;
+    }
+
+    .rain-layer {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(172deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 14px);
+      animation: rainAnim 0.25s linear infinite;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    @keyframes rainAnim {
+      0% { background-position: 0 0; }
+      100% { background-position: -15px 120px; }
+    }
+
+    .mountains-bg {
+      position: absolute;
+      bottom: 22%;
+      width: 100%;
+      height: 240px;
+      clip-path: polygon(0% 100%, 12% 50%, 28% 80%, 48% 35%, 68% 70%, 88% 45%, 100% 100%);
+      background-color: #120905;
+      opacity: 0.9;
+    }
+
+    .road-surface {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 24%;
+      background: #080403;
+      border-top: 1px solid #1a0b05;
+      z-index: 2;
+    }
+
+    .road-line {
+      position: absolute;
+      top: 45%;
+      width: 100%;
+      height: 3px;
+      background: repeating-linear-gradient(90deg, #3d1e10 0px, #3d1e10 50px, transparent 50px, transparent 100px);
+      animation: roadMove 0.8s linear infinite;
+    }
+
+    @keyframes roadMove {
+      0% { background-position: 0 0; }
+      100% { background-position: -100px 0; }
+    }
+
+    .viewport {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px 24px;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bus-icon-badge {
+      width: 28px;
+      height: 28px;
+      background: #241108;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      border: 1px solid #422010;
+    }
+
+    .brand-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #eaeaea;
+    }
+
+    .route-sub {
+      font-size: 10px;
+      color: #7d523b;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .clock-display {
+      font-size: 14px;
+      font-weight: 600;
+      color: #cbb2a1;
+    }
+
+    .whos-driving-btn {
+      background: rgba(26, 13, 7, 0.85);
+      border: 1px solid #422010;
+      padding: 6px 14px;
+      border-radius: 20px;
+      color: #fff;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .whos-driving-btn:hover {
+      background: rgba(50, 25, 13, 0.9);
+      border-color: #f59e0b;
+    }
+
+    .hero-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-top: -10px;
+    }
+
+    .track-counter {
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: #a3755c;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .hindi-title {
+      font-family: 'Rozha One', serif;
+      font-size: 84px;
+      line-height: 0.95;
+      font-weight: 700;
+      color: #ffffff;
+      text-shadow: 0 10px 35px rgba(0,0,0,0.9);
+      letter-spacing: 1px;
+    }
+
+    .highway-badge {
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: #7d523b;
+      text-transform: uppercase;
+      margin-top: 8px;
+      margin-bottom: 16px;
+    }
+
+    .pills-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .pill-btn {
+      background: rgba(18, 9, 5, 0.9);
+      border: 1px solid #3d2012;
+      padding: 8px 18px;
+      border-radius: 20px;
+      color: #ccc;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .pill-btn:hover {
+      border-color: #f59e0b;
+      color: #fff;
+    }
+
+    .pill-chai {
+      background: #e67e22;
+      border: none;
+      color: #000;
+      font-weight: 700;
+      box-shadow: 0 0 18px rgba(230, 126, 34, 0.45);
+    }
+
+    .bus-wrapper {
+      position: relative;
+      width: 480px;
+      height: 190px;
+      margin-top: 5px;
+    }
+
+    .bus-body {
+      position: absolute;
+      bottom: 22px;
+      left: 15px;
+      width: 450px;
+      height: 145px;
+      background: linear-gradient(to right, #e67e22 0%, #f1c40f 50%, #e67e22 100%);
+      border-radius: 28px 60px 10px 10px;
+      box-shadow: inset 0 -10px 0 rgba(0,0,0,0.25), 0 15px 30px rgba(0,0,0,0.8);
+      border: 3px solid #140904;
+      overflow: hidden;
+    }
+
+    .bus-stripes {
+      position: absolute;
+      top: 48%;
+      width: 100%;
+      height: 26px;
+      background: repeating-linear-gradient(45deg, #e74c3c, #e74c3c 15px, #2980b9 15px, #2980b9 30px, #2ecc71 30px, #2ecc71 45px);
+      border-top: 2px solid #000;
+      border-bottom: 2px solid #000;
+    }
+
+    .bus-windows {
+      position: absolute;
+      top: 16px;
+      left: 20px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .window-pane {
+      width: 48px;
+      height: 40px;
+      background: #2c3e50;
+      border-radius: 6px 6px 2px 2px;
+      border: 2px solid #000;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .window-pane::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.35) 0%, transparent 60%);
+    }
+
+    .driver-window {
+      width: 68px;
+      border-radius: 6px 24px 2px 2px;
+      background: #1a252f;
+    }
+
+    .luggage-rack {
+      position: absolute;
+      top: -16px;
+      left: 60px;
+      width: 280px;
+      height: 16px;
+      border: 3px solid #222;
+      border-bottom: none;
+      border-radius: 4px 4px 0 0;
+      display: flex;
+      gap: 10px;
+      padding-left: 10px;
+    }
+
+    .luggage-box {
+      width: 48px;
+      height: 14px;
+      background: #7f8c8d;
+      border-radius: 2px;
+      border: 1px solid #111;
+    }
+
+    .wheel {
+      position: absolute;
+      bottom: 5px;
+      width: 52px;
+      height: 52px;
+      background: #000;
+      border-radius: 50%;
+      border: 4px solid #222;
+      box-shadow: 0 0 0 3px #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+    }
+
+    .wheel-rim {
+      width: 22px;
+      height: 22px;
+      background: #95a5a6;
+      border-radius: 50%;
+      border: 2px solid #fff;
+    }
+
+    .wheel-left { left: 80px; }
+    .wheel-right { right: 80px; }
+
+    .headlight-beam {
+      position: absolute;
+      right: -85px;
+      bottom: 28px;
+      width: 130px;
+      height: 50px;
+      background: linear-gradient(to right, rgba(255,255,210,0.45), transparent);
+      clip-path: polygon(0 30%, 100% 0, 100% 100%, 0 70%);
+      pointer-events: none;
+    }
+
+    .player-dock-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .playlist-drawer {
+      background: #140a05;
+      border: 1px solid #331a0e;
+      border-radius: 14px;
+      padding: 10px;
+      width: 100%;
+      max-width: 680px;
+      max-height: 220px;
+      overflow-y: auto;
+      margin-bottom: 6px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.8);
+    }
+
+    .track-row {
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #a8795d;
+      cursor: pointer;
+      border-bottom: 1px solid #241209;
+      display: flex;
+      justify-content: space-between;
+      border-radius: 6px;
+    }
+
+    .track-row:hover, .track-row.active {
+      color: #fff;
+      background: #241209;
+    }
+
+    .spotify-dock {
+      width: 100%;
+      max-width: 680px;
+      background: rgba(15, 8, 4, 0.94);
+      border: 1px solid #331a0e;
+      border-radius: 35px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.95);
+    }
+
+    .song-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 220px;
+    }
+
+    .album-art {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #28140a;
+      border: 2px solid #4a2512;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      animation: spinRecord 12s linear infinite;
+      animation-play-state: paused;
+    }
+
+    .album-art.playing { animation-play-state: running; }
+
+    @keyframes spinRecord {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .title-box {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .song-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .song-artist {
+      font-size: 11px;
+      color: #885c43;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .center-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+      max-width: 280px;
+    }
+
+    .button-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .ctrl-btn {
+      background: none;
+      border: none;
+      color: #a8795d;
+      cursor: pointer;
+      font-size: 15px;
+      transition: color 0.2s;
+    }
+
+    .ctrl-btn:hover { color: #fff; }
+
+    .play-pause-btn {
+      width: 38px;
+      height: 38px;
+      background: #fff;
+      color: #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+    }
+
+    .progress-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .time-lbl {
+      font-size: 10px;
+      color: #6b432c;
+      width: 26px;
+    }
+
+    .progress-rail {
+      flex: 1;
+      height: 3px;
+      background: #29140a;
+      border-radius: 2px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: #e67e22;
+      border-radius: 2px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-box {
+      background: #180e08;
+      border: 1px solid #4a2512;
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      max-width: 340px;
+      color: #fff;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.9);
+    }
+
+    .qr-container {
+      background: #fff;
+      padding: 12px;
+      border-radius: 12px;
+      display: inline-block;
+      margin: 8px 0;
+    }
+
+    .qr-container img {
+      width: 180px;
+      height: 180px;
+      display: block;
+    }
+
+    .social-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 20px;
+      border: 1px solid #4a2512;
+      background: #241108;
+      color: #fff;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .social-btn:hover { background: #e67e22; color: #000; }
+    .btn-close {
+      background: transparent;
+      color: #a8795d;
+      border: none;
+      font-size: 12px;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sky-container">
+    <div class="mountains-bg"></div>
+    <div class="rain-layer"></div>
+    <div class="road-surface">
+      <div class="road-line"></div>
+    </div>
+  </div>
+
+  <div class="viewport">
+
+    <header class="navbar">
+      <div class="brand-group">
+        <div class="bus-icon-badge">🚌</div>
+        <div>
+          <div class="brand-title">বাস ড্রাইভার</div>
+          <div class="route-sub">NH 48 · ALL NIGHT EXPRESS</div>
+        </div>
+      </div>
+
+      <div class="top-right">
+        <div class="clock-display" id="clock">00:00</div>
+        <button class="whos-driving-btn" onclick="openModal('driverModal')">
+          <span>🐱</span> Who's driving?
+        </button>
+      </div>
+    </header>
+
+    <main class="hero-center">
+      <div class="track-counter">10 ORIGINAL SUPER HITS</div>
+      <h1 class="hindi-title">बस ड्राइवर</h1>
+      <div class="highway-badge">ALL NIGHT ON NH 48</div>
+
+      <div class="pills-group">
+        <button class="pill-btn" onclick="playHorn()">📢 HORN OK PLEASE</button>
+        <button class="pill-btn pill-chai" onclick="openModal('paymentModal')">☕ Chai for Driver</button>
+      </div>
+
+      <div class="bus-wrapper">
+        <div class="luggage-rack">
+          <div class="luggage-box"></div>
+          <div class="luggage-box" style="width:60px; background:#3f2011;"></div>
+        </div>
+        <div class="bus-body">
+          <div class="bus-windows">
+            <div class="window-pane"></div>
+            <div class="window-pane"></div>
+            <div class="window-pane"></div>
+            <div class="window-pane driver-window"></div>
+          </div>
+          <div class="bus-stripes"></div>
+        </div>
+        <div class="wheel wheel-left"><div class="wheel-rim"></div></div>
+        <div class="wheel wheel-right"><div class="wheel-rim"></div></div>
+        <div class="headlight-beam"></div>
+      </div>
+    </main>
+
+    <footer class="player-dock-container">
+
+      <!-- Playlist Drawer -->
+      <div class="playlist-drawer" id="playlistDrawer" style="display:none;">
+        <div id="playlistContainer"></div>
+      </div>
+
+      <div class="spotify-dock">
+        <div class="song-meta">
+          <div class="album-art" id="albumArt">📻</div>
+          <div class="title-box">
+            <div class="song-title" id="songTitle">Loading Song...</div>
+            <div class="song-artist" id="songArtist">Artist Name</div>
+          </div>
+        </div>
+
+        <div class="center-controls">
+          <div class="button-row">
+            <button class="ctrl-btn" onclick="togglePlaylistDrawer()" title="All Songs">☰</button>
+            <button class="ctrl-btn" onclick="prevTrack()">⏮</button>
+            <button class="play-pause-btn" id="playBtn" onclick="togglePlay()">▶</button>
+            <button class="ctrl-btn" onclick="nextTrack()">⏭</button>
+          </div>
+
+          <div class="progress-bar-wrap">
+            <span class="time-lbl" id="currTime">0:00</span>
+            <div class="progress-rail" onclick="seekAudio(event)">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span class="time-lbl" id="durTime">0:00</span>
+          </div>
+        </div>
+
+        <div>
+          <button class="ctrl-btn" style="font-size:18px;" onclick="openModal('driverModal')">🎟️</button>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <audio id="mainAudio"></audio>
+
+  <!-- Chai Scanner Modal -->
+  <div class="modal-backdrop" id="paymentModal">
+    <div class="modal-box">
+      <h3 style="font-size: 16px; color: #f59e0b;">☕ Buy Chai for the Driver</h3>
+      <p style="font-size: 12px; color: #cbb2a1;">GPay / PhonePe / Paytm scan korun:</p>
+      <div class="qr-container">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=sakil@upi&pn=Bus%20Driver%20Chai" alt="Payment QR Code">
+      </div>
+      <p style="font-size: 11px; color: #a8795d;">UPI: sakil@upi</p>
+      <button class="btn-close" onclick="closeModal('paymentModal')">✕ Close</button>
+    </div>
+  </div>
+
+  <!-- Driver Info Modal -->
+  <div class="modal-backdrop" id="driverModal">
+    <div class="modal-box">
+      <div style="font-size:36px;">🧔🏻‍♂️</div>
+      <h3 style="font-size: 16px;">Driver Profile</h3>
+      <p style="font-size: 12px; color: #a8795d;">Bus Driver Radio Admin</p>
+      <a href="https://instagram.com" target="_blank" class="social-btn">📷 Instagram Profile</a>
+      <a href="https://youtube.com" target="_blank" class="social-btn">▶️ YouTube Channel</a>
+      <a href="https://github.com" target="_blank" class="social-btn">💻 GitHub Profile</a>
+      <button class="btn-close" onclick="closeModal('driverModal')">✕ Close</button>
+    </div>
+  </div>
+
+  <script>
+    // 100% ORIGINAL AUDIO MATCHED PLAYLIST
+    const playlist = [
+      { 
+        title: "Dheere Dheere Se Meri Zindagi", 
+        artist: "Kumar Sanu · Aashiqui", 
+        src: "https://ia801503.us.archive.org/15/items/dheere-dheere-se-meri-zindagi-mein-aana/Dheere%20Dheere%20Se%20Meri%20Zindagi%20Mein%20Aana.mp3" 
+      },
+      { 
+        title: "Tip Tip Barsa Paani", 
+        artist: "Alka Yagnik & Udit Narayan · Mohra", 
+        src: "https://ia800109.us.archive.org/9/items/TipTipBarsaPaani_201708/Tip%20Tip%20Barsa%20Paani.mp3" 
+      },
+      { 
+        title: "Chura Ke Dil Mera", 
+        artist: "Kumar Sanu & Alka Yagnik · Main Khiladi Tu Anari", 
+        src: "https://ia801602.us.archive.org/16/items/chura-ke-dil-mera-goriya-chali/Chura%20Ke%20Dil%20Mera%20Goriya%20Chali.mp3" 
+      },
+      { 
+        title: "Pehla Nasha", 
+        artist: "Udit Narayan · Jo Jeeta Wohi Sikandar", 
+        src: "https://ia800705.us.archive.org/8/items/pehla-nasha-full-song-jo-jeeta-wohi-sikandar-aamir-khan-ayesha-jhulka-udit-narayan/Pehla%20Nasha%20%28Full%20Song%29%20Jo%20Jeeta%20Wohi%20Sikandar%20_%20Aamir%20Khan%2C%20Ayesha%20Jhulka%20_%20Udit%20Narayan.mp3" 
+      },
+      { 
+        title: "Lag Ja Gale", 
+        artist: "Lata Mangeshkar · Woh Kaun Thi", 
+        src: "https://ia801408.us.archive.org/18/items/lag-ja-gale-ke-phir-ye-hansi-raat-ho-na-ho/Lag%20Ja%20Gale%20Ke%20Phir%20Ye%20Hansi%20Raat%20Ho%20Na%20Ho.mp3" 
+      },
+      { 
+        title: "Chura Liya Hai Tumne Jo Dil Ko", 
+        artist: "Asha Bhosle & Mohd Rafi · Yaadon Ki Baaraat", 
+        src: "https://ia801402.us.archive.org/18/items/chura-liya-hai-tumne-jo-dil-ko/Chura%20Liya%20Hai%20Tumne%20Jo%20Dil%20Ko.mp3" 
+      },
+      { 
+        title: "Pal Yaad Aayenge", 
+        artist: "KK · Pal Album", 
+        src: "https://ia801400.us.archive.org/21/items/pal-kk-album-songs/Pal.mp3" 
+      },
+      { 
+        title: "Woh Lamhe Woh Baatein", 
+        artist: "Atif Aslam · Zeher", 
+        src: "https://ia801509.us.archive.org/13/items/woh-lamhe-woh-baatein/Woh%20Lamhe%20Woh%20Baatein.mp3" 
+      },
+      { 
+        title: "Jiya Dhadak Dhadak Jaye", 
+        artist: "Rahat Fateh Ali Khan · Kalyug", 
+        src: "https://ia801309.us.archive.org/30/items/jiya-dhadak-dhadak-jaye/Jiya%20Dhadak%20Dhadak%20Jaye.mp3" 
+      },
+      { 
+        title: "Dil Deewana Bin Sajna Ke", 
+        artist: "S. P. Balasubrahmanyam · Maine Pyar Kiya", 
+        src: "https://ia801409.us.archive.org/29/items/dil-deewana-bin-sajna-ke/Dil%20Deewana.mp3" 
+      }
+    ];
+
+    let currentTrack
